@@ -5,7 +5,8 @@
 	"require": {
 		"laravel/framework": "4.0.*",
 		 "rcrowe/twigbridge": "0.5.*",
-		 "phpoffice/phpexcel": "dev-develop"
+		 "phpoffice/phpexcel": "dev-develop",
+		 "twbs/bootstrap": "dev-3.0.0-wip"
 	},
 	"autoload": {
 		"classmap": [
