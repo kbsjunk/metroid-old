@@ -6,7 +6,9 @@
 		"laravel/framework": "4.0.*",
 		 "rcrowe/twigbridge": "0.5.*",
 		 "phpoffice/phpexcel": "dev-develop",
-		 "twbs/bootstrap": "dev-3.0.0-wip"
+		 "twbs/bootstrap": "dev-3.0.0-wip",
+		 "jasonlewis/basset": "4.0.*@dev",
+		 "leafo/lessphp": "v0.3.9"
 	},
 	"autoload": {
 		"classmap": [
