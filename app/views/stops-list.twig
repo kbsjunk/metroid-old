@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Coordinates</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+	<script>
+
+	var map;
+	var markers = new Object();
+
+	function initialize() {
+		var mapOptions = {
+			zoom: 4,
+			center: new google.maps.LatLng(-25.363882, 131.044922),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+			mapOptions);
+
+		var marker = new google.maps.Marker({
+			position: map.getCenter(),
+			map: map,
+			title: 'Click to zoom'
+		});
+
+		google.maps.event.addListener(marker, 'click', function() {
+			map.setZoom(8);
+			map.setCenter(marker.getPosition());
+		});
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+	$( document ).ready(function() {
+
+		$('.map-target').on('click', function(e) {
+			e.preventDefault();
+
+			var target = $(this);
+			var position = new google.maps.LatLng(target.data('pos-y'), target.data('pos-x'));
+
+			if (!markers.hasOwnProperty(target.data('stop-id'))) {
+
+				var marker = new google.maps.Marker({
+					target: target,
+					map: map,
+					position: position,
+					draggable: true,
+					title: target.data('stop-name')
+				});
+
+				markers[target.data('stop-id')] = marker;
+			}
+			else {
+				var marker = markers[target.data('stop-id')];
+				marker.setPosition(position);
+			}
+
+			map.setCenter(marker.getPosition());
+			map.setZoom(16);
+
+			google.maps.event.addListener(marker, 'dragend', function() {
+
+				var position = marker.getPosition();
+				map.panTo(marker.getPosition());
+
+				var target = marker.target;
+
+				target.data('pos-x', position.lng());
+				target.data('pos-y', position.lat());
+
+				target.html('Updated');
+
+				var pointRow = target.closest('tr');
+				pointRow.find('.pos_x > input').val(position.lng());
+				pointRow.find('.pos_y > input').val(position.lat());
+
+				var guessId = target.data('guess-id');
+				if (guessId) { $('.map-guess-'+guessId).not(target).parent('li').hide(); }
+
+			});
+
+			google.maps.event.addListener(marker, 'click', function() {
+
+				var position = marker.getPosition();
+
+				var target = marker.target;
+
+				target.data('pos-x', position.lng());
+				target.data('pos-y', position.lat());
+
+				target.html('Updated');
+
+				var pointRow = target.closest('tr');
+				pointRow.find('.pos_x > input').val(position.lng());
+				pointRow.find('.pos_y > input').val(position.lat());
+
+				var guessId = target.data('guess-id');
+				if (guessId) { $('.map-guess-'+guessId).not(target).parent('li').hide(); }
+
+			});
+
+			$("form.stop-save").on('submit', function(e) {
+
+				/* stop form from submitting normally */
+				e.preventDefault();
+
+				/* get some values from elements on the page: */
+				var $form = $( this ),
+				url = $form.attr( 'action' );
+
+				/* Send the data using post */
+				var posting = $.post( url, $form.serialize() );
+
+				/* Put the results in a div */
+				posting.done(function( data ) {
+					
+					$form.find('input[name="pos_x"]').val(data.pos_x);
+					$form.find('input[name="pos_y"]').val(data.pos_y);
+				});
+			});
+
+		});
+});
+</script>
+<style type="text/css">
+#map-wrapper {
+	position:fixed;
+	top:0;
+	right:0;
+	width:600px;
+	height:600px;
+}
+#map-canvas {
+	width:100%;
+	height: 100%;
+}
+table {
+	border-collapse: collapse;
+}
+td, th {
+	vertical-align: top;
+	text-align: left;
+	border: 1px solid lightgray;
+}
+ul {
+	margin:0;
+}
+</style>
+</head>
+<body>
+	<div id="map-wrapper">
+		<div id="map-canvas"></div>
+	</div>
+
+{#<h3>Plotted Stops</h3>
+		{% for stop in stops if stop.pos.x and not stop.subname %}
+		{% endfor %}
+		#}
+
+		<h3>Ambiguous Stops</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>Stop</th>
+					<!-- <th>Map</th> -->
+					<th>Lat</th>
+					<th>Long</th>
+					<!-- <th>Plot</th> -->
+					<th>Guess</th>
+					<th>Save</th>
+				</tr>
+			</thead>
+			{% for stop in stops %} {# if stop.subname %} #}
+			
+			<tr>
+				{{ form_open({class: 'stop-save' })|raw }}
+				<td>
+					<strong>{{ stop.name }} <small>{{ stop.subname|raw }}</small></strong>
+					{{ form_hidden('stop_id', stop.id)|raw }}
+				</td>
+				<!-- <td>
+					<a id="stop_{{ stop.id }}" href="#" class="map-target" data-pos-x="{{ stop.pos.x }}" data-pos-y="{{ stop.pos.y }}" data-stop-name="{{ stop.name }}">Map</a>
+				</td> -->
+				<td class="pos_x">
+					{{ form_text('pos_x', stop.pos.x)|raw }}
+				</td>
+				<td class="pos_y">
+					{{ form_text('pos_y', stop.pos.y)|raw }}
+				</td>
+				{#<td>
+					{% if not stop.pos.x %}&mdash;{% endif %}
+				</td>#}
+				<td>
+					<ul>
+						<li>
+							<strong><a id="stop_{{ stop.id }}" href="#" class="map-target"
+								data-pos-x="{{ stop.pos.x }}" data-pos-y="{{ stop.pos.y }}"
+								data-stop-id="{{ stop.id }}" data-stop-name="{{ stop.name }}">Map</a></strong>
+						</li>
+
+					{#	{% for osm_stop in stop.rough_osm_stops %}
+						<li>
+							<a id="stop_{{ stop.id }}_{{ osm_stop.id }}" href="#" class="map-target map-guess-{{ osm_stop.id }}"
+							data-pos-x="{{ osm_stop.stop_lon }}" data-pos-y="{{ osm_stop.stop_lat }}" data-guess-id="{{ osm_stop.id }}" 
+							data-stop-id="{{ stop.id }}" data-stop-name="{{ stop.name }}">Map</a>
+						</li>
+						{% endfor %}#}
+					</ul>
+				</td>
+				<td>
+					{{ form_submit('Save')|raw }}
+				</td>
+				{{ form_close()|raw }}
+			</tr>
+			
+			{% endfor %}
+		</table>
+
+{#<h3>Unplotted Stops</h3>
+			{% for stop in stops if not stop.pos.x %}
+		{% endfor %}
+		#}
+
+	</body>
+	</html>

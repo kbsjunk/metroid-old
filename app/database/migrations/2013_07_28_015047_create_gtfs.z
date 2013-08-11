@@ -1,0 +1,124 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+
+class CreateGtfs extends Migration {
+
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('agency', function($table) {
+			$table->integer('file_id');
+			$table->integer('agency_id');
+			$table->string('agency_name');
+			$table->string('agency_url');
+			$table->string('agency_timezone');
+			$table->string('agency_lang');
+			$table->string('agency_phone');
+			$table->primary('agency_id');
+		});
+
+		Schema::create('calendar', function($table) {
+			$table->integer('file_id');
+			$table->integer('service_id');
+			$table->boolean('monday');
+			$table->boolean('tuesday');
+			$table->boolean('wednesday');
+			$table->boolean('thursday');
+			$table->boolean('friday');
+			$table->boolean('saturday');
+			$table->boolean('sunday');
+			$table->string('start_date');
+			$table->string('end_date');
+			$table->integer('start_date_timestamp');
+			$table->integer('end_date_timestamp', 11);
+		});
+
+		Schema::create('calendar_dates', function($table) {
+			$table->integer('file_id');
+			$table->integer('service_id');
+			$table->string('date');
+			$table->integer('date_timestamp');
+			$table->integer('exception_type', 2);
+		});
+
+		Schema::create('routes', function($table) {
+			$table->integer('file_id');
+			$table->integer('route_id');
+			$table->string('agency_id');
+			$table->string('route_short_name');
+			$table->string('route_long_name');
+			$table->integer('route_type');
+			$table->string('route_text_color');
+			$table->string('route_color');
+			$table->string('route_url');
+			$table->string('route_desc');
+			$table->primary('route_id');
+		});
+
+		Schema::create('stop_times', function($table) {
+			$table->integer('file_id');
+			$table->integer('trip_id');
+			$table->integer('arrival_time');
+			$table->integer('arrival_time_seconds');
+			$table->integer('departure_time');
+			$table->integer('departure_time_seconds');
+			$table->integer('stop_id');
+			$table->integer('stop_sequence');
+			$table->string('stop_headsign');
+			$table->integer('pickup_type');
+			$table->integer('drop_off_type');
+			$table->string('shape_dist_traveled');
+		});
+
+		Schema::create('stops', function($table) {
+			$table->integer('file_id');
+			$table->integer('stop_id');
+			$table->string('stop_code');
+			$table->string('stop_name');
+			$table->string('stop_desc');
+			$table->decimal('stop_lat', 9,6);
+			$table->decimal('stop_lon', 9,6);
+			$table->integer('zone_id');
+			$table->string('stop_url');
+			$table->integer('location_type');
+			$table->integer('parent_station');
+			$table->primary('stop_id');
+		});
+
+
+		Schema::create('trips', function($table) {
+			$table->integer('file_id');
+			$table->integer('route_id');
+			$table->string('service_id');
+			$table->integer('trip_id');
+			$table->string('trip_headsign');
+			$table->string('trip_short_name');
+			$table->boolean('direction_id');
+			$table->integer('block_id');
+			$table->integer('shape_id');
+			$table->primary('trip_id');
+		});
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::drop('agency');
+		Schema::drop('calendar');
+		Schema::drop('calendar_dates');
+		Schema::drop('routes');
+		Schema::drop('stop_times');
+		Schema::drop('stops');
+		Schema::drop('trips');
+	}
+
+}

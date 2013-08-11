@@ -1,0 +1,12 @@
+<svg width="{{ dim.canvas.padded_width }}" height="{{ dim.canvas.padded_height }}" xmlns="http://www.w3.org/2000/svg">
+	<g>
+		{% for stop in stops %}
+		<circle
+		cx="{{ dim.convert(stop.pos.x, false) }}"
+		cy="{{ dim.convert(stop.pos.y, true) }}"
+		r="4" fill="{{ stop.city ? 'red' : 'white' }}" stroke="black" stroke-width="1">
+		<title>{{ stop.name }}</title>
+	</circle>
+	{% endfor %}
+</g>
+</svg>
