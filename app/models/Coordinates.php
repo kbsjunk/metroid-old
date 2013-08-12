@@ -7,6 +7,7 @@ class Coordinates extends Eloquent {
 	{
 		return $this->belongsTo('CSchema', 'schema_id');
 	}
+	
 	public function stop()
 	{
 		return $this->belongsTo('Stop');

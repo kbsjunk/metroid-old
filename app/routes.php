@@ -53,14 +53,20 @@ Route::post('stops/fix', array('before' => 'csrf',  function() {
 
 			$newCoords = Coordinates::find($newCoords->id);
 
-			return Response::json(
-				array(
-					'stop_id' => $stop_id,
-					'pos_x' => $newCoords->x,
-					'pos_y' => $newCoords->y,
-					)
-				);
 
+			if (Request::ajax())
+			{
+				return Response::json(
+					array(
+						'stop_id' => $stop_id,
+						'pos_x' => $newCoords->x,
+						'pos_y' => $newCoords->y,
+						)
+					);
+			}
+			else {
+				Redirect::to('stops/fix');
+			}
 		}
 	}
 	else {
@@ -89,11 +95,16 @@ Route::get('stops/map', function()
 		$query->where('schema_id', $schema->id);
 	}))->orderBy('name')->get();
 
+	$lines = Line::with(array('shapes' => function($query) {
+		$schema = CSchema::find(1);
+		$query->where('schema_id', $schema->id);
+	}))->orderBy('name')->get();
+
 	$dim = new MapDimensions(600, 800);
 	$bounds = $dim->bounds();
 	$size = $dim->size();
 
-	return View::make('stops-svg')->with('stops', $stops)->with('dim', $dim);
+	return View::make('stops-svg')->with('stops', $stops)->with('lines', $lines)->with('dim', $dim);
 	
 });
 
@@ -197,16 +208,16 @@ class MapDimensions {
 		$canvas->padded_height = $canvas->height + (2 * $padding);
 		$this->_canvas = $canvas;
 
-		$this->table = DB::table('osm_stops');
+		$this->table = DB::table('metroid_coordinates');
 	}
 
 	private function _calculate() {
 		$bounds = $this->table->select(
 			DB::raw('
-				max(stop_lat) as north,
-				min(stop_lat) as south,
-				max(stop_lon) as east,
-				min(stop_lon) as west
+				max(y) as north,
+				min(y) as south,
+				max(x) as east,
+				min(x) as west
 				')
 			)->get();
 		$bounds = $bounds[0];

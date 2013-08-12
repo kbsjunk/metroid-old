@@ -127,6 +127,7 @@
 		});
 });
 </script>
+{{ basset_show('application.css') }}
 <style type="text/css">
 #map-wrapper {
 	position:fixed;
@@ -178,19 +179,19 @@ ul {
 			{% for stop in stops %} {# if stop.subname %} #}
 			
 			<tr>
-				{{ form_open({class: 'stop-save' })|raw }}
+				{{ form_open({class: 'stop-save' }) }}
 				<td>
-					<strong>{{ stop.name }} <small>{{ stop.subname|raw }}</small></strong>
-					{{ form_hidden('stop_id', stop.id)|raw }}
+					<strong>{{ stop.name }} <small>{{ stop.subname }}</small></strong>
+					{{ form_hidden('stop_id', stop.id) }}
 				</td>
 				<!-- <td>
 					<a id="stop_{{ stop.id }}" href="#" class="map-target" data-pos-x="{{ stop.pos.x }}" data-pos-y="{{ stop.pos.y }}" data-stop-name="{{ stop.name }}">Map</a>
 				</td> -->
 				<td class="pos_x">
-					{{ form_text('pos_x', stop.pos.x)|raw }}
+					{{ form_text('pos_x', stop.pos.x) }}
 				</td>
 				<td class="pos_y">
-					{{ form_text('pos_y', stop.pos.y)|raw }}
+					{{ form_text('pos_y', stop.pos.y) }}
 				</td>
 				{#<td>
 					{% if not stop.pos.x %}&mdash;{% endif %}
@@ -213,9 +214,9 @@ ul {
 					</ul>
 				</td>
 				<td>
-					{{ form_submit('Save')|raw }}
+					{{ form_submit('Save') }}
 				</td>
-				{{ form_close()|raw }}
+				{{ form_close() }}
 			</tr>
 			
 			{% endfor %}
