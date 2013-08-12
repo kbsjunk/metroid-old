@@ -11,10 +11,27 @@
 			</LineStyle>
 		</Style>
 {% endfor %}
-		<Style id="stop_icon">
+		<Style id="icon_train">
 			<IconStyle>
+				<scale>0.4</scale>
 				<Icon>
-					<href>http://kitbs.com/temp/stop.16.svg</href>
+					<href>http://kitbs.com/temp/train-32.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Style id="icon_subway">
+			<IconStyle>
+				<scale>0.4</scale>
+				<Icon>
+					<href>http://kitbs.com/temp/subway-32.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+		<Style id="icon_metro">
+			<IconStyle>
+				<scale>0.4</scale>
+				<Icon>
+					<href>http://kitbs.com/temp/metro-32.png</href>
 				</Icon>
 			</IconStyle>
 		</Style>
@@ -39,7 +56,7 @@
 {% for stop in stops %}
 		<Placemark id="stop_{{ stop.id }}">
 			<name>{{ stop.name }}{{ stop.subname(false) }}</name>
-			<styleUrl>#stop_icon</styleUrl>
+			<styleUrl>#icon_{{ stop.city ? 'train' : 'metro' }}</styleUrl>
 			<Point>
 				<extrude>0</extrude>
 				<altitudeMode>clampToGround</altitudeMode>

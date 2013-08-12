@@ -77,7 +77,28 @@ Route::post('stops/fix', array('before' => 'csrf',  function() {
 
 Route::get('icon/stop/{width?}', function($width = 16)
 {
-	return View::make('svg-icon-stop')->with('width', $width);
+	$contents = View::make('svg-icon-stop')->with('width', $width);
+
+	$response = Response::make($contents, 200);
+	$response->header('Content-Type', 'image/svg+xml');
+
+	return $response;
+});
+
+Route::get('icon/marker/{icon?}/{width?}', function($icon = 'train', $width = 16)
+{
+	$background_color = '1874CD';//231F20';
+
+	$contents = View::make('svg-icon-marker')
+	->with('icon', $icon)
+	->with('background_color', $background_color)
+	->with('width', $width);
+
+	$response = Response::make($contents, 200);
+	$response->header('Content-Type', 'image/svg+xml');
+	$response->header('Content-Disposition', 'inline; filename="'.$icon.'-'.$width.'.svg"');
+
+	return $response;
 });
 
 Route::get('stops/fix', function()
