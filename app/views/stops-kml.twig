@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+	<Document>
+		<name>Metroid KML</name>
+		<description>Metroid KML</description>
+{% for line in lines %}
+		<Style id="line_{{ line.id }}">
+			<LineStyle>
+				<color>cc{{ line.color_kml }}</color>
+				<width>6</width>
+			</LineStyle>
+		</Style>
+{% endfor %}
+		<Style id="stop_icon">
+			<IconStyle>
+				<Icon>
+					<href>http://kitbs.com/temp/stop.16.svg</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+
+{% for line in lines %}
+{% for shape in line.shapes %}
+		<Placemark id="line_{{ line.id }}_shape_{{ shape.id }}">
+			<name>{{ line.name }}</name>
+			<styleUrl>#line_{{ line.id }}</styleUrl>
+			<LineString>
+				<altitudeMode>absolute</altitudeMode>
+				<coordinates>
+				{% for point in shape.points %}
+	{{ point.x }},{{ point.y }},0.0
+				{% endfor %}
+</coordinates>
+			</LineString>
+		</Placemark>
+{% endfor %}
+{% endfor %}
+
+{% for stop in stops %}
+		<Placemark id="stop_{{ stop.id }}">
+			<name>{{ stop.name }}{{ stop.subname(false) }}</name>
+			<styleUrl>#stop_icon</styleUrl>
+			<Point>
+				<extrude>0</extrude>
+				<altitudeMode>clampToGround</altitudeMode>
+				<coordinates>{{ stop.pos.x }},{{ stop.pos.y }},0.0</coordinates>
+			</Point>
+		</Placemark>
+{% endfor %}
+
+	</Document>
+</kml>
