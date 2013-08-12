@@ -21,6 +21,9 @@
 		map = new google.maps.Map(document.getElementById('map-canvas'),
 			mapOptions);
 
+		var transitLayer = new google.maps.TransitLayer();
+		transitLayer.setMap(map);
+
 		var marker = new google.maps.Marker({
 			position: map.getCenter(),
 			map: map,
@@ -118,7 +121,7 @@
 
 				/* Put the results in a div */
 				posting.done(function( data ) {
-					
+
 					$form.find('input[name="pos_x"]').val(data.pos_x);
 					$form.find('input[name="pos_y"]').val(data.pos_y);
 				});
@@ -181,7 +184,7 @@ ul {
 			<tr>
 				{{ form_open({class: 'stop-save' }) }}
 				<td>
-					<strong>{{ stop.name }} <small>{{ stop.subname }}</small></strong>
+					<strong>{{ stop.name }}{{ stop.subname }}</strong>
 					{{ form_hidden('stop_id', stop.id) }}
 				</td>
 				<!-- <td>
@@ -202,7 +205,7 @@ ul {
 							<strong><a id="stop_{{ stop.id }}" href="#" class="map-target"
 								data-pos-x="{{ stop.pos.x }}" data-pos-y="{{ stop.pos.y }}"
 								data-stop-id="{{ stop.id }}" data-stop-name="{{ stop.name }}">Map</a></strong>
-						</li>
+							</li>
 
 					{#	{% for osm_stop in stop.rough_osm_stops %}
 						<li>

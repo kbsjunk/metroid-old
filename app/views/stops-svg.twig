@@ -1,24 +1,40 @@
 <svg width="{{ dim.canvas.padded_width }}" height="{{ dim.canvas.padded_height }}" xmlns="http://www.w3.org/2000/svg">
 
 
-{% for line in lines %}
-<g>
-	{% for shape in line.shapes %}
+	{% for line in lines %} {#if line.agency_id == 1 %}#}
+	<g>
+		{% for shape in line.shapes %}
+		<polyline points="{% for point in shape.points %}{{ dim.convert(point.x, false) }},{{ dim.convert(point.y, true) }} {% endfor %}"
+		style="fill:none;stroke:{{ line.color }};stroke-width:3;{{ line.dasharray }}">
+		<title>{{ line.name }}</title>
+	</polyline>
+	{% if shape.disused %}
 	<polyline points="{% for point in shape.points %}{{ dim.convert(point.x, false) }},{{ dim.convert(point.y, true) }} {% endfor %}"
-	style="fill:none;stroke:{{ line.color ? '#'~line.color : 'black' }};stroke-width:3" />
-	{% endfor %}
+	style="fill:none;stroke:white;stroke-width:1.5;" />
+	{% endif %}
+	{% for label_at in shape.label_at %}
+	<rect
+	x="{{ dim.convert(label_at.x, false)-4 }}"
+	y="{{ dim.convert(label_at.y, true)-4 }}"
+	width="8" height="8"
+	style="fill:{{ line.color }};stroke:{{ line.color }};stroke-width:0;">
+	<title>{{ line.name }}</title>
+</rect>
+{% endfor %}
+{% endfor %}
 </g>
 {% endfor %}
 
-	<g>
-		{% for stop in stops %}
-		<circle
-		cx="{{ dim.convert(stop.pos.x, false) }}"
-		cy="{{ dim.convert(stop.pos.y, true) }}"
-		r="4" style="fill:{{ stop.city ? 'blue' : 'white' }};stroke:black;stroke-width:1;">
-		<title>{{ stop.name }}</title>
-	</circle>
-	{% endfor %}
+<g>
+	{% for stop in stops %}{#if not stop.city %}#}
+	<circle
+	cx="{{ dim.convert(stop.pos.x, false) }}"
+	cy="{{ dim.convert(stop.pos.y, true) }}"
+	r="2"
+	style="fill:{{ stop.city ? 'blue' : 'white' }};stroke:{{ stop.disused ? 'gray' : 'black' }};stroke-width:1;">
+	<title>{{ stop.name }}</title>
+</circle>
+{% endfor %}
 </g>
 
 </svg>

@@ -17,4 +17,23 @@ class Line extends Eloquent {
 		if ($this->subname) return ' <small>('.$this->subname.')</small>';
 	}
 
+	public function dasharray() {
+		if ($this->dash) {
+			return 'stroke-dasharray:' . $this->dash . ';';
+		}
+	}
+
+	public function color() {
+		return '#' . ($this->color ? trim($this->color, '# ') : 'black');
+	}
+	public function color_kml() {
+		if ($this->color) {
+			return implode('', array_reverse(str_split(trim($this->color, '# '), 2)));
+		}
+		else {
+			return '000000';
+		}
+
+	}
+
 }

@@ -2,6 +2,7 @@
 
 class Shape extends Eloquent {
 	protected $table = 'metroid_shapes';
+	private $_points = array();
 
 	public function cschema()
 	{
@@ -12,12 +13,24 @@ class Shape extends Eloquent {
 		return $this->belongsTo('Line');
 	}
 	public function points() {
-		$points = explode(' ', $this->shape);
+		if (!$this->_points) {
+			$points = preg_split('/\s+/imx', trim($this->shape));
 
-		foreach ($points as &$point) {
-			$point = array_combine(array('x', 'y'), explode(',', $point));
+			foreach ($points as &$point) {
+				$point = array_combine(array('x', 'y'), explode(',', $point));
+			}
+			$this->_points = $points;
 		}
 
-		return $points;
+		return $this->_points;
 	}
+
+	public function label_at($start = false) {
+		$points = $this->points();
+		return array(array_shift($points), array_pop($points));
+	}
+	// public function label_at($start = false) {
+	// 	$point = $this->points();
+	// 	return $start ? array_shift($point) : array_pop($point);
+	// }
 }

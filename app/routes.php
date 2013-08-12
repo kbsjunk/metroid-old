@@ -75,6 +75,11 @@ Route::post('stops/fix', array('before' => 'csrf',  function() {
 
 }));
 
+Route::get('icon/stop/{width?}', function($width = 16)
+{
+	return View::make('svg-icon-stop')->with('width', $width);
+});
+
 Route::get('stops/fix', function()
 {
 
@@ -106,6 +111,27 @@ Route::get('stops/map', function()
 
 	return View::make('stops-svg')->with('stops', $stops)->with('lines', $lines)->with('dim', $dim);
 	
+});
+
+Route::get('stops/kml', function()
+{
+
+	$stops = Stop::with(array('coordinates' => function($query) {
+		$schema = CSchema::find(1);
+		$query->where('schema_id', $schema->id);
+	}))->orderBy('name')->get();
+
+	$lines = Line::with(array('shapes' => function($query) {
+		$schema = CSchema::find(1);
+		$query->where('schema_id', $schema->id);
+	}))->orderBy('name')->get();
+
+	$contents = View::make('stops-kml')->with('stops', $stops)->with('lines', $lines);
+	$response = Response::make($contents, 200);
+	$response->header('Content-Type', 'application/vnd.google-earth.kml+xml');
+
+	return $response;
+
 });
 
 Route::get('import', function() {
@@ -219,7 +245,7 @@ class MapDimensions {
 				max(x) as east,
 				min(x) as west
 				')
-			)->get();
+			)->get();//->where('stop_id', '<', 200)->get();
 		$bounds = $bounds[0];
 		$this->_bounds = $bounds;
 

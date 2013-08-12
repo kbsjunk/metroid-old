@@ -23,8 +23,16 @@ class Stop extends Eloquent {
 		return $this->coordinates()->first();
 	}
 
-	public function subname() {
-		if ($this->subname) return ' <small>('.$this->subname.')</small>';
+	public function subname($html = true) {
+		if ($this->subname) {
+			if ($html) {
+				return ' <small>('.$this->subname.')</small>';
+			}
+			else {
+				return ' ('.$this->subname.')';
+			}
+			
+		}
 	}
 
 }
