@@ -81,6 +81,7 @@ Route::get('icon/stop/{width?}', function($width = 16)
 
 	$response = Response::make($contents, 200);
 	$response->header('Content-Type', 'image/svg+xml');
+	// $response->header('Content-Disposition', 'inline; filename="'.$icon.'-'.$width.'.svg"');
 
 	return $response;
 });
@@ -109,8 +110,25 @@ Route::get('stops/fix', function()
 		$query->where('schema_id', $schema->id);
 	}))->orderBy('name')->get();
 
-	return View::make('stops-list')->with('stops', $stops);//->with('dim', $dim);
+	$lines = Line::with(array('shapes' => function($query) {
+		$schema = CSchema::find(1);
+		$query->where('schema_id', $schema->id);
+	}))->orderBy('name')->first();
+
+	return View::make('stops-list')->with('stops', $stops)->with('lines', array($lines));//->with('dim', $dim);
 	
+});
+
+Route::get('lines/fix', function()
+{
+
+	$lines = Line::with(array('shapes' => function($query) {
+		$schema = CSchema::find(1);
+		$query->where('schema_id', $schema->id);
+	}))->orderBy('name')->get();
+
+	return View::make('lines-list')->with('lines', $lines);
+
 });
 
 Route::get('stops/map', function()
@@ -150,6 +168,7 @@ Route::get('stops/kml', function()
 	$contents = View::make('stops-kml')->with('stops', $stops)->with('lines', $lines);
 	$response = Response::make($contents, 200);
 	$response->header('Content-Type', 'application/vnd.google-earth.kml+xml');
+	$response->header('Content-Disposition', 'inline; filename="metroid-test-'.rand().'.kml"');
 
 	return $response;
 

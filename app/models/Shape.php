@@ -3,6 +3,7 @@
 class Shape extends Eloquent {
 	protected $table = 'metroid_shapes';
 	private $_points = array();
+	private $_simple = array();
 
 	public function cschema()
 	{
@@ -25,6 +26,16 @@ class Shape extends Eloquent {
 		return $this->_points;
 	}
 
+	public function simple() {
+		if (!$this->_points) {
+			$simple = Geography::simplifyPolyline(
+				$this->points(),
+				0.00025);
+			$this->_simple = $simple;
+		}
+		return $this->_simple;
+	}
+	
 	public function label_at($start = false) {
 		$points = $this->points();
 		return array(array_shift($points), array_pop($points));

@@ -5,7 +5,7 @@
 	<g>
 		{% for shape in line.shapes %}
 		<polyline points="{% for point in shape.points %}{{ dim.convert(point.x, false) }},{{ dim.convert(point.y, true) }} {% endfor %}"
-		style="fill:none;stroke:{{ line.color }};stroke-width:3;{{ line.dasharray }}">
+		style="fill:none;stroke:#{{ line.color }};stroke-width:3;{{ line.dasharray }}">
 		<title>{{ line.name }}</title>
 	</polyline>
 	{% if shape.disused %}
@@ -17,7 +17,7 @@
 	x="{{ dim.convert(label_at.x, false)-4 }}"
 	y="{{ dim.convert(label_at.y, true)-4 }}"
 	width="8" height="8"
-	style="fill:{{ line.color }};stroke:{{ line.color }};stroke-width:0;">
+	style="fill:#{{ line.color }};stroke:#{{ line.color }};stroke-width:0;">
 	<title>{{ line.name }}</title>
 </rect>
 {% endfor %}

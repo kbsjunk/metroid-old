@@ -6,7 +6,10 @@
 	<meta charset="utf-8">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+	<script src="/assets/js/vendor/simplify-polyline.js"></script>
 	<script>
+
+	google.maps.visualRefresh = true;
 
 	var map;
 	var markers = new Object();
@@ -24,16 +27,6 @@
 		var transitLayer = new google.maps.TransitLayer();
 		transitLayer.setMap(map);
 
-		var marker = new google.maps.Marker({
-			position: map.getCenter(),
-			map: map,
-			title: 'Click to zoom'
-		});
-
-		google.maps.event.addListener(marker, 'click', function() {
-			map.setZoom(8);
-			map.setCenter(marker.getPosition());
-		});
 	}
 
 	google.maps.event.addDomListener(window, 'load', initialize);

@@ -24,7 +24,7 @@ class Line extends Eloquent {
 	}
 
 	public function color() {
-		return '#' . ($this->color ? trim($this->color, '# ') : 'black');
+		return ($this->color ? trim($this->color, '# ') : '000000');
 	}
 	public function color_kml() {
 		if ($this->color) {

@@ -115,6 +115,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'TwigBridge\TwigServiceProvider',
 		'Basset\BassetServiceProvider',
+		'Kitbs\Geography\GeographyServiceProvider'
 
 	),
 
@@ -181,6 +182,7 @@ return array(
 		'Validator'   => 'Illuminate\Support\Facades\Validator',
 		'View'        => 'Illuminate\Support\Facades\View',
 		'Basset'      => 'Basset\Facade',
+		'Geography'      => 'Kitbs\Geography\Facade',
 
 	),
 
