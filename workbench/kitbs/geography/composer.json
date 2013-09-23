@@ -1,0 +1,23 @@
+{
+    "name": "kitbs/geography",
+    "description": "",
+    "authors": [
+        {
+            "name": "kitbs",
+            "email": "mail@kitbs.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Kitbs\\Geography": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
